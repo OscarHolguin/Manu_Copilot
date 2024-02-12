@@ -139,7 +139,7 @@ import speech_recognition as sr
 
 def transcribe_speech():
     r = sr.Recognizer()
-    with sr.Microphone() as source:
+    with sr.Microphone(device_index=0) as source:
         r.adjust_for_ambient_noise(source)
         #with st.chat_message("assistant"):
         with st.spinner("Listening..."):
