@@ -141,8 +141,8 @@ def transcribe_speech():
     r = sr.Recognizer()
     with sr.Microphone() as source:
         r.adjust_for_ambient_noise(source)
-        with st.chat_message("assistant"):
-            with st.spinner("Listening..."):
+        #with st.chat_message("assistant"):
+        with st.spinner("Listening..."):
                 audio = r.listen(source)
                 with st.spinner("Transcribing..."):
                     try:
@@ -246,7 +246,7 @@ if True:
                 if text:
                     #append messages                         
                     st.session_state.messages.append({"role": "user", "content": text})
-                    st.write(f"You said: {text}")
+                    st.sidebar.write(f"Last thing you said: {text}")
                 # with st.chat_message("assistant"):
                     response_listen = get_copilot_response(text)
                     response_audio =  stream_response(response_listen,speech=True) #response with speaking 
