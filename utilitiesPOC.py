@@ -18,9 +18,9 @@ import datetime
 # from sklearn.tree import DecisionTreeClassifier
 # from sklearn.ensemble import RandomForestClassifier
 # from sklearn.naive_bayes import GaussianNB
-import spacy
-import xgboost as xgb
-from xgboost.sklearn import XGBClassifier
+# import spacy
+# import xgboost as xgb
+# from xgboost.sklearn import XGBClassifier
 # from sklearn import svm
 # #copilot specific
 # from nltk.tokenize import word_tokenize
