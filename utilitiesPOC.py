@@ -34,16 +34,16 @@ import datetime
 # COMMAND ----------
 
 #the function is prepared to have a 1 level nested schema 
-def buildSchema(columns,dType = StringType(),schemaType = ArrayType,multidType=True):
+# def buildSchema(columns,dType = StringType(),schemaType = ArrayType,multidType=True):
     
-    listidx=next((i for i, v in enumerate(columns) if isinstance(v,list)), None) #find the index of the sublist
-    if listidx:
-        fields = [StructField(columns[listidx-1],StructType([StructField(c,dType,True) for c in col]),True) if isinstance(col,list) 
-              else StructField(col,dType,True) for col in columns if columns.index(col)!=listidx-1]
-    else:
-        fields = [StructField(col,dType,True) for col in columns]
+#     listidx=next((i for i, v in enumerate(columns) if isinstance(v,list)), None) #find the index of the sublist
+#     if listidx:
+#         fields = [StructField(columns[listidx-1],StructType([StructField(c,dType,True) for c in col]),True) if isinstance(col,list) 
+#               else StructField(col,dType,True) for col in columns if columns.index(col)!=listidx-1]
+#     else:
+#         fields = [StructField(col,dType,True) for col in columns]
     
-    return schemaType(StructType(fields))
+#     return schemaType(StructType(fields))
 
 # COMMAND ----------
 
