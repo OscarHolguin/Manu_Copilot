@@ -31,7 +31,7 @@ streamlit
 
 nltk
 llama-index
-
+langchain-openai
 transformers
 cartography 
 torch
