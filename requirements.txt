@@ -191,13 +191,10 @@ pyreadline3==3.4.1
 
 pyspark==3.5.0
 
-python-dotenv==1.0.1
-python-engineio==4.8.2
+
+
 python-graphql-client==0.4.3
 
-python-multipart==0.0.6
-python-socketio==5.11.0
-pyttsx3==2.90
 
 
 
