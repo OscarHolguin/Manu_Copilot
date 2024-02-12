@@ -1,3 +1,4 @@
+azure-storage
 python-graphql-client==0.4.3
 SpeechRecognition==3.10.1
 
