@@ -257,21 +257,6 @@ tzdata==2023.4
 tzlocal==5.2
 uptrace==1.22.0
 
-uvicorn>=0.25.0
-validators==0.22.0
-wasabi==1.1.2
-watchdog==4.0.0
-watchfiles==0.20.0
-
-weasel==0.3.4
-webencodings==0.5.1
-
-websockets==12.0
-
-wikipedia==1.4.0
-
-wrapt==1.16.0
-wsproto==1.2.0
 xgboost==2.0.3
 yarl==1.9.4
 zipp==3.17.0
