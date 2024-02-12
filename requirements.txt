@@ -1,4 +1,4 @@
-azure-storage
+
 python-graphql-client==0.4.3
 SpeechRecognition==3.10.1
 
@@ -29,7 +29,7 @@ pyvis==0.3.2
 spacy==3.7.2
 en_core_web_sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.7.1/en_core_web_sm-3.7.1.tar.gz
 streamlit
-
+azure-storage-file-datalake
 nltk
 llama-index
 langchain-openai
