@@ -250,7 +250,7 @@ def flatten(df)->'DataFrame flat':
 
 # COMMAND ----------
 
-from pyspark.sql.types import StructType, StructField, ArrayType, IntegerType, StringType, BooleanType
+# from pyspark.sql.types import StructType, StructField, ArrayType, IntegerType, StringType, BooleanType
 
 
 # COMMAND ----------
@@ -259,39 +259,39 @@ from pyspark.sql.types import StructType, StructField, ArrayType, IntegerType, S
 
 # COMMAND ----------
 
-def schema_from_json(json_string):
-    if isinstance(json_string,dict):
-        json_dict = json_string
-    else:
-        json_dict = json.loads(json_string)
+# def schema_from_json(json_string):
+#     if isinstance(json_string,dict):
+#         json_dict = json_string
+#     else:
+#         json_dict = json.loads(json_string)
 
-    def build_schema(json_obj):
-        data_type = type(json_obj)
-        if data_type == dict:
-            fields = []
-            for key, value in json_obj.items():
-                field_schema = build_schema(value)
-                field = StructField(key, field_schema, nullable=True)
-                fields.append(field)
-            return StructType(fields)
-        elif data_type == list:
-            if len(json_obj) == 0:
-                return ArrayType(StringType(), containsNull=True)
-            else:
-                element_schema = build_schema(json_obj[0])
-                return ArrayType(element_schema, containsNull=True)
-        elif data_type == int:
-            return IntegerType()
-        elif data_type == str:
-            return StringType()
-        elif data_type == bool:
-            return BooleanType()
-        else:
-            return StringType()
+#     def build_schema(json_obj):
+#         data_type = type(json_obj)
+#         if data_type == dict:
+#             fields = []
+#             for key, value in json_obj.items():
+#                 field_schema = build_schema(value)
+#                 field = StructField(key, field_schema, nullable=True)
+#                 fields.append(field)
+#             return StructType(fields)
+#         elif data_type == list:
+#             if len(json_obj) == 0:
+#                 return ArrayType(StringType(), containsNull=True)
+#             else:
+#                 element_schema = build_schema(json_obj[0])
+#                 return ArrayType(element_schema, containsNull=True)
+#         elif data_type == int:
+#             return IntegerType()
+#         elif data_type == str:
+#             return StringType()
+#         elif data_type == bool:
+#             return BooleanType()
+#         else:
+#             return StringType()
 
-    schema = build_schema(json_dict)
+#     schema = build_schema(json_dict)
 
-    return schema
+#     return schema
 
 # COMMAND ----------
 
@@ -316,73 +316,73 @@ def schema_from_json(json_string):
 
 # COMMAND ----------
 
-def score_model():
-    scoring = {'accuracy':make_scorer(accuracy_score), 
-               'precision':make_scorer(precision_score),
-               'recall':make_scorer(recall_score), 
-               'f1_score':make_scorer(f1_score)}
+# def score_model():
+#     scoring = {'accuracy':make_scorer(accuracy_score), 
+#                'precision':make_scorer(precision_score),
+#                'recall':make_scorer(recall_score), 
+#                'f1_score':make_scorer(f1_score)}
 
 
-# COMMAND ----------
+# # COMMAND ----------
 
-def best_supclf_model(X_train,y_train,scoring:dict,folds=None,bestmetric='F1 Score') ->'Best score supervised classification model':
-    print('Starting comparison of supervised classification models')
-    #initialize different classification models
-    dtr_model = DecisionTreeClassifier()
-    rfc_model = RandomForestClassifier(n_estimators=100)
-    gnb_model = GaussianNB()
-    svc_model = svm.SVC()
-    xgbm_model = XGBClassifier(objective = 'binary:logistic',use_label_encoder=False,learning_rate = 0.8,n_estimators=160,max_depth=12,min_child_weight=0.5,
-                         gamma=0.1,subsample=0.5,colsample_bytree=1,reg_lambda=1,reg_alpha=1);
+# def best_supclf_model(X_train,y_train,scoring:dict,folds=None,bestmetric='F1 Score') ->'Best score supervised classification model':
+#     print('Starting comparison of supervised classification models')
+#     #initialize different classification models
+#     dtr_model = DecisionTreeClassifier()
+#     rfc_model = RandomForestClassifier(n_estimators=100)
+#     gnb_model = GaussianNB()
+#     svc_model = svm.SVC()
+#     xgbm_model = XGBClassifier(objective = 'binary:logistic',use_label_encoder=False,learning_rate = 0.8,n_estimators=160,max_depth=12,min_child_weight=0.5,
+#                          gamma=0.1,subsample=0.5,colsample_bytree=1,reg_lambda=1,reg_alpha=1);
     
     
     
-    dtr = cross_validate(dtr_model, X_train, y_train, cv=folds, scoring=scoring)
-    print('Done with dtr')
-    rfc = cross_validate(rfc_model, X_train, y_train, cv=folds, scoring=scoring)
-    print('Done with rfc')
-    gnb = cross_validate(gnb_model, X_train, y_train, cv=folds, scoring=scoring)
-    print('Done with gnb')
-    svc = cross_validate(svc_model, X_train, y_train, cv=folds, scoring=scoring)
-    print('Done with svm')
-    xgbm = cross_validate(xgbm_model, X_train, y_train, cv=folds, scoring=scoring)
-    print('Done with xgbm')
+#     dtr = cross_validate(dtr_model, X_train, y_train, cv=folds, scoring=scoring)
+#     print('Done with dtr')
+#     rfc = cross_validate(rfc_model, X_train, y_train, cv=folds, scoring=scoring)
+#     print('Done with rfc')
+#     gnb = cross_validate(gnb_model, X_train, y_train, cv=folds, scoring=scoring)
+#     print('Done with gnb')
+#     svc = cross_validate(svc_model, X_train, y_train, cv=folds, scoring=scoring)
+#     print('Done with svm')
+#     xgbm = cross_validate(xgbm_model, X_train, y_train, cv=folds, scoring=scoring)
+#     print('Done with xgbm')
     
 
-    models_scores_table = pd.DataFrame({'dtr_model':[dtr['test_accuracy'].mean(),
-                                                       dtr['test_precision'].mean(),
-                                                       dtr['test_recall'].mean(),
-                                                       dtr['test_f1_score'].mean()],
+#     models_scores_table = pd.DataFrame({'dtr_model':[dtr['test_accuracy'].mean(),
+#                                                        dtr['test_precision'].mean(),
+#                                                        dtr['test_recall'].mean(),
+#                                                        dtr['test_f1_score'].mean()],
                                        
-                                       'rfc_model':[rfc['test_accuracy'].mean(),
-                                                        rfc['test_precision'].mean(),
-                                                        rfc['test_recall'].mean(),
-                                                        rfc['test_f1_score'].mean()],
+#                                        'rfc_model':[rfc['test_accuracy'].mean(),
+#                                                         rfc['test_precision'].mean(),
+#                                                         rfc['test_recall'].mean(),
+#                                                         rfc['test_f1_score'].mean()],
                                        
-                                       'gnb_model':[gnb['test_accuracy'].mean(),
-                                                               gnb['test_precision'].mean(),
-                                                               gnb['test_recall'].mean(),
-                                                               gnb['test_f1_score'].mean()],
+#                                        'gnb_model':[gnb['test_accuracy'].mean(),
+#                                                                gnb['test_precision'].mean(),
+#                                                                gnb['test_recall'].mean(),
+#                                                                gnb['test_f1_score'].mean()],
                                       
-                                        'svc_model':[svc['test_accuracy'].mean(),
-                                                                svc['test_precision'].mean(),
-                                                                svc['test_recall'].mean(),
-                                                                svc['test_f1_score'].mean()],
+#                                         'svc_model':[svc['test_accuracy'].mean(),
+#                                                                 svc['test_precision'].mean(),
+#                                                                 svc['test_recall'].mean(),
+#                                                                 svc['test_f1_score'].mean()],
                                        
-                                       'xgbm':[xgbm['test_accuracy'].mean(),
-                                                              xgbm['test_precision'].mean(),
-                                                              xgbm['test_recall'].mean(),
-                                                              xgbm['test_f1_score'].mean()]},
+#                                        'xgbm':[xgbm['test_accuracy'].mean(),
+#                                                               xgbm['test_precision'].mean(),
+#                                                               xgbm['test_recall'].mean(),
+#                                                               xgbm['test_f1_score'].mean()]},
                                       
-                                      index=['Accuracy', 'Precision', 'Recall', 'F1 Score'])
+#                                       index=['Accuracy', 'Precision', 'Recall', 'F1 Score'])
     
-    models_scores_table['Best_Score'] = models_scores_table.idxmax(axis=1)
-    print(models_scores_table)
+#     models_scores_table['Best_Score'] = models_scores_table.idxmax(axis=1)
+#     print(models_scores_table)
     
-    bestm = models_scores_table["Best_Score"].loc[bestmetric]
-    print(bestm)
+#     bestm = models_scores_table["Best_Score"].loc[bestmetric]
+#     print(bestm)
     
-    return locals()[bestm],models_scores_table
+#     return locals()[bestm],models_scores_table
 
 # COMMAND ----------
 
