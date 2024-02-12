@@ -205,11 +205,11 @@ streamlit-vertical-slider==2.5.5
 xgboost==2.0.3
 
 networkx==3.2.1
-numpy==1.24.4
+
 pypdf
 
 pyodbc==5.0.1
-pyvis==0.3.2
+
 spacy==3.7.2
 en_core_web_sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.7.1/en_core_web_sm-3.7.1.tar.gz
 streamlit==1.29.0
