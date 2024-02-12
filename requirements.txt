@@ -40,4 +40,4 @@ langchain-experimental
 openai
 tiktoken
 PyPDF2
-PyAudio
+pyaudio
