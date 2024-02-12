@@ -14,7 +14,7 @@ streamlit-image-coordinates==0.1.6
 streamlit-keyup==0.2.2
 streamlit-toggle-switch==1.0.2
 streamlit-vertical-slider==2.5.5
-
+streamlit-webrtc
 langchain
 matplotlib==3.7.3
 networkx==3.2.1
