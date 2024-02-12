@@ -9,7 +9,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import json
 import datetime
-from pyspark.sql.functions import *
+# from pyspark.sql.functions import *
 # from pyspark.sql.types import *
 # from pyspark.sql.window import Window
 # import mlflow
@@ -21,15 +21,15 @@ from sklearn.naive_bayes import GaussianNB
 import spacy
 import xgboost as xgb
 from xgboost.sklearn import XGBClassifier
-from sklearn import svm
-#copilot specific
-from nltk.tokenize import word_tokenize
-import nltk
-# nltk.download('punkt')
-# nltk.download('stopwords')
-import uuid
-from string import punctuation
-from langchain.graphs import FalkorDBGraph
+# from sklearn import svm
+# #copilot specific
+# from nltk.tokenize import word_tokenize
+# import nltk
+# # nltk.download('punkt')
+# # nltk.download('stopwords')
+# import uuid
+# from string import punctuation
+# from langchain.graphs import FalkorDBGraph
 
 # COMMAND ----------
 
