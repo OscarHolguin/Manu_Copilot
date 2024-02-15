@@ -245,24 +245,24 @@ if True:
                 
             }
             """):
-            ready_button = st.button("🎙️", key='stButtonVoice')
-             ##      
-            if ready_button:
-                with st.spinner("Loading STT"):
-                    from streamlit_mic_recorder import mic_recorder,speech_to_text
+            # ready_button = st.button("🎙️", key='stButtonVoice')
+            #  ##      
+            # if ready_button:
+            #     with st.spinner("Loading STT"):
+            #         from streamlit_mic_recorder import mic_recorder,speech_to_text
 
-                    audio=mic_recorder(start_prompt="⏺️",stop_prompt="⏹️",key='recorder')
-                    #if audio:
-                    text = transcribe_speech()
-                if text:
-                    #append messages                         
-                    st.session_state.messages.append({"role": "user", "content": text})
-                    st.sidebar.write(f"Last thing you said: {text}")
-                # with st.chat_message("assistant"):
-                    response_listen = get_copilot_response(text)
-                    response_audio =  stream_response(response_listen,speech=True) #response with speaking 
-                    message_audio = {"role": "assistant", "content": response_audio}
-                    st.session_state.messages.append(message_audio)
+            #         audio=mic_recorder(start_prompt="⏺️",stop_prompt="⏹️",key='recorder')
+            #         #if audio:
+            #         text = transcribe_speech()
+            #     if text:
+            #         #append messages                         
+            #         st.session_state.messages.append({"role": "user", "content": text})
+            #         st.sidebar.write(f"Last thing you said: {text}")
+            #     # with st.chat_message("assistant"):
+            #         response_listen = get_copilot_response(text)
+            #         response_audio =  stream_response(response_listen,speech=True) #response with speaking 
+            #         message_audio = {"role": "assistant", "content": response_audio}
+            #         st.session_state.messages.append(message_audio)
              
 
                     
