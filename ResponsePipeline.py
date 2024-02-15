@@ -211,15 +211,20 @@ class RAG2:
     def build_chain(self,**kwargs):
         #memory = self.memory() if (readmem := self.memory()) else None
         method = kwargs.get("method","graph")
-        from langchain.prompts.prompt import PromptTemplate
+        
+        #PROMPT TEMPLATE        
+        from langchain.prompts import HumanMessagePromptTemplate, SystemMessagePromptTemplate, ChatPromptTemplate,PromptTemplate
+
+        
+        #####
 
         memory = self.usememory
         verbose = kwargs.get("verbose",True)
 
         if memory:
-            prompt = PromptTemplate(input_variables=["chat_history", "query"], template="{chat_history} {query}")
+            prompt = PromptTemplate(input_variables=["chat_history", "question"], template="{chat_history} {question}")
         else:
-            prompt = PromptTemplate(input_variables=["query"],template ="{query}")
+            prompt = PromptTemplate(input_variables=["question"],template ="{question}")
 
         self.memory_conversation = self.memory(readmem=memory) if not self.memory_conversation else self.memory_conversation
 
@@ -231,9 +236,26 @@ class RAG2:
                 #general chain for graphs
                 print("building graph chain")
                 from langchain.chains import GraphCypherQAChain
+                #Prompt template
+                        
+                general_system_template = r""" 
+                Given a specific context, please give a short answer to the question talking like a professional Manufacturing AI Assistant.
+                Your answers should be concise, precise and should easily demonstrate you are an expert. Remember you are also a specialist in Root Cause Analysis and FMEA
+                you can perform RCA and FMEA basing yourself on the reference values retrieved and comparing them to the incidents. 
+                ----
+                {context}
+                ----
+                """
+                general_user_template = "Question:```{question}```"
+                messages = [
+                            SystemMessagePromptTemplate.from_template(general_system_template),
+                            HumanMessagePromptTemplate.from_template(general_user_template)
+                ]
+                qa_prompt = ChatPromptTemplate.from_messages( messages )
 
-                chain = GraphCypherQAChain.from_llm(llm=self.llm, prompt=prompt,graph=self.graph,validate_cypher = True, verbose=verbose,memory=self.memory_conversation,**kwargs)
-                chain.input_key = "query"
+                chain = GraphCypherQAChain.from_llm(llm=self.llm, prompt=prompt,graph=self.graph,validate_cypher = True, 
+                                                    verbose=verbose,memory=self.memory_conversation, promptTemplate=qa_prompt,**kwargs)
+                chain.input_key = "question"
 
             elif method.lower()=="vector":
                 print("Building vector chain ")
@@ -249,11 +271,11 @@ class RAG2:
                 
 
                 #chain = RetrievalQA.from_chain_type(llm=self.llm, chain_type="stuff", retriever=retriever,return_source_documents=True,verbose=verbose)
-                from langchain.prompts import HumanMessagePromptTemplate, SystemMessagePromptTemplate, ChatPromptTemplate
-                
+                        
                 general_system_template = r""" 
                 Given a specific context, please give a short answer to the question talking like a professional Manufacturing AI Assistant.
-                Your answers should be concise, precise and should easily demonstrate you are an expert.
+                Your answers should be concise, precise and should easily demonstrate you are an expert. Remember you are also a specialist in Root Cause Analysis and FMEA
+                you can perform RCA and FMEA basing yourself on the reference values retrieved and comparing them to the incidents. 
                 ----
                 {context}
                 ----
@@ -284,7 +306,7 @@ class RAG2:
                 from langchain.chains import GraphCypherQAChain
                 if complexity.lower()=='simple':
                     print("SIMPLE RAG LANGCHAIN")
-                    if usememory := kwargs.get("usememory"):
+                    if usememory := kwargs.get("usememory") or self.memory_conversation:
                         print("With Read memory")
                     
                     chain = self.build_chain(**kwargs)
@@ -340,7 +362,7 @@ class RAG2:
 
 
     def response(self,query,complexity="simple",**kwargs):
-        method = kwargs.get("method","graph")
+        method = kwargs.get("method","vector")
         verbose = kwargs.get("verbose",True)
         retriever = self.get_retriever(**kwargs)
         try:
@@ -352,7 +374,7 @@ class RAG2:
                 if self.type.lower()=='langchain':
                     print('using retriever({"query": query}).get("answer")')
                     #result = retriever({"question": query}).get('answer')#
-                    result = retriever.invoke({"query": query}).get('result') 
+                    result = retriever.invoke({"question": query}).get('result') 
                     pickled_str = pickle.dumps(self.memory_conversation)
                 elif self.type.lower()=='llama':
                     result = retriever.query(query)
@@ -378,9 +400,9 @@ class RAG2:
                 from langchain.prompts.prompt import PromptTemplate
                 if self.usememory:
                     print("Normal LLM response with same memory")
-                    prompt = PromptTemplate(input_variables=["chat_history", "query"], template="{chat_history} {query}")
-                    chat = ConversationChain(llm=self.llm,verbose=kwargs.get("verbose",True),prompt=prompt,memory=self.memory_conversation ,input_key="query")
-                    return chat.invoke({"query":query}).get("response")
+                    prompt = PromptTemplate(input_variables=["chat_history", "question"], template="{chat_history} {query}")
+                    chat = ConversationChain(llm=self.llm,verbose=kwargs.get("verbose",True),prompt=prompt,memory=self.memory_conversation ,input_key="question")
+                    return chat.invoke({"question":query}).get("response")
                 else:
                     from langchain.schema import HumanMessage
                     message = HumanMessage(content=query)
@@ -392,10 +414,16 @@ class RAG2:
             
 
 # COMMAND ----------
+#start graph
+url ="neo4j+s://b75e0bd8.databases.neo4j.io"
+username ="neo4j"
+password = "aziMmumvuVru-rgeKuO0zT7mEtTxu29Jgrmp6lFKv0w"
+graph_store = get_graphdb("langchain",graphdb = "neo4j",url=url,username=username,password=password)
+
 
 #call RAG class initialize vector class 
 rag2 = RAG2
-vecrag = rag2(llmrca,None,type="langchain",embeddings = embeddings_model,usememory=True)
+vecrag = rag2(llmrca,graph_store,type="langchain",embeddings = embeddings_model,usememory=True)
 #vectorchain = vecrag.get_retriever(method="vector",text_embeddings = loaded_embeddings,store="faiss")
 
 
@@ -428,10 +456,12 @@ if __name__=="__main__":
 
 # # COMMAND ----------
 
-# from fastapi import FastAPI
+from fastapi import FastAPI
 # from langchain.chat_models import ChatAnthropic, ChatOpenAI
-
-# from langserve import add_routes
+from langchain.prompts import ChatPromptTemplate
+prompt = ChatPromptTemplate.from_template("Answer the users question: {question}")
+vectorchain = vecrag.get_retriever(method="vector",text_embeddings = loaded_embeddings,store="faiss")
+from langserve import add_routes
 
 
 # add_routes(
@@ -439,19 +469,64 @@ if __name__=="__main__":
 #      llmrca,
 #      path="/openai",
 #  )
+app = FastAPI(
+    title="LangChain Server",
+    version="1.0",
+    description="Spin up a simple api server using Langchain's Runnable interfaces",
+)
+# lsgpt = vecrag.response(query=prompt,method="vector",store="faiss",text_embeddings = loaded_embeddings)
+
+# print(vecrag.response(query=prompt.format_messages(question="how much docuemnts you have in your knowledge base"),method="vector",store="faiss",text_embeddings = loaded_embeddings))
+add_routes(app, vectorchain, enable_feedback_endpoint=True,path="/cotalk") #this supports only vector chain qa
+
+@app.get("/rag")
+def vector_rag(query_param: str):
+    #whole rag response for conversations
+    result=vecrag.response(query=prompt.format_messages(question=query_param),method="vector",store="faiss",text_embeddings = loaded_embeddings)
+    return {"result": result}
+
+from langserve import RemoteRunnable
+
+cop=RemoteRunnable("http://localhost:8000/cotalk/")
+
+##SERVER SITE EXAMPLE###############################################################################################################################################
+
+app = FastAPI(
+    title="Manufacturing-Copilot's Server",
+    version="1.0",
+    description="Spin up a simple api server using Langchain's Runnable interfaces",
+)
+
+#Response from vectorchain directlty
+vectorchain = vecrag.get_retriever(method="vector",text_embeddings = loaded_embeddings,store="faiss")
+add_routes(app, vectorchain, enable_feedback_endpoint=True,path="/cotalk") #this supports only vector chain qa
+
+#Response from graph
+graphchain = vecrag.get_retriever(method="graph",usememory=True)
+add_routes(app, graphchain, enable_feedback_endpoint=True,path="/kg") #this supports only graph chain qa
+
+#WHOLE RAG ANSWER conversations with vector only
+@app.get("/rag")
+def vector_rag(query_param: str, method:str):
+    if method.lower()=="vector":
+        result=vecrag.response(query=prompt.format_messages(question=query_param),method=method,store="faiss",text_embeddings = loaded_embeddings)
+    else:
+        result=vecrag.response(query=query_param)
+    return {"result": result}
+
+########################################################################################################################################################################
 
 
 
-# if __name__ == "__main__":
-#     import uvicorn
+if __name__ == "__main__":
+    import uvicorn
 
-#     uvicorn.run(app, host="localhost", port=8000)
+    uvicorn.run(app, host="localhost", port=8000)
      
-#     # import requests
-#     # inputs = {"query": "where and why did the production stoppage occurred"}
-#     # response = requests.post("http://localhost:8000/invoke", json=inputs)
-#     # print(response)
-    
+# #     import requests
+#     inputs = {"question": "how many tickets are there"}
+# #     response = requests.post("http://localhost:8000/invoke", json=inputs)
+
     
 # from langserve.client import Client
 
@@ -464,18 +539,40 @@ if __name__=="__main__":
 #from langserve import RemoteRunnable
 
 
-# # COMMAND ----------
+# from langchain.schema import SystemMessage, HumanMessage
+# from langchain.prompts import ChatPromptTemplate
+# from langchain.schema.runnable import RunnableMap
+# from langserve import RemoteRunnable
 
-# # Create a langserve app and register your vectorchain as a runnable
-# #from langchain import RAG, RemoteRunnable
-# from langserve import langserve, run
-# from langserve.client import RemoteRunnable, LangServeClient
+# openai = RemoteRunnable("http://localhost:8000/openai/")
+# anthropic = RemoteRunnable("http://localhost:8000/anthropic/")
+# joke_chain = RemoteRunnable("http://localhost:8000/joke/")
 
+# joke_chain.invoke({"topic": "parrots"})
 
+# # or async
+# await joke_chain.ainvoke({"topic": "parrots"})
 
-# # COMMAND ----------
+# prompt = [
+#     SystemMessage(content='Act like either a cat or a parrot.'),
+#     HumanMessage(content='Hello!')
+# ]
 
-# from langserve.client import RemoteRunnable, LangServeClient
+# # Supports astream
+# async for msg in anthropic.astream(prompt):
+#     print(msg, end="", flush=True)
+
+# prompt = ChatPromptTemplate.from_messages(
+#     [("system", "Tell me a long story about {topic}")]
+# )
+
+# # Can define custom chains
+# chain = prompt | RunnableMap({
+#     "openai": openai,
+#     "anthropic": anthropic,
+# })
+
+# chain.batch([{"topic": "parrots"}, {"topic": "cats"}])
 
 
 # # COMMAND ----------

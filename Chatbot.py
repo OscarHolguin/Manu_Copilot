@@ -18,12 +18,12 @@ st.set_page_config(page_title = "Copilot-RCA",
     )
 
 #st.image("https://tse4.mm.bing.net/th/id/OIP.nxkAddPMpqnAlVZN-YhIBwHaHw?rs=1&pid=ImgDetMain",width=150)
-if not st.session_state.get("messages"):
-    st.image("https://th.bing.com/th/id/R.2f543723e0d97263a5d4b07a48179fbf?rik=wIY0H2lT3OHXUQ&riu=http%3a%2f%2fwww.aislingsinclair.com%2fwp-content%2fuploads%2f2020%2f03%2fFeatured-Image-LARGE-300.gif&ehk=AwrXRF6v%2bPujkguHiN1sR1QTE%2ftJO1a3KpxkKpjXB2o%3d&risl=&pid=ImgRaw&r=0",
-         width = 150)
+# if not st.session_state.get("messages"):
+#     st.image("https://th.bing.com/th/id/R.2f543723e0d97263a5d4b07a48179fbf?rik=wIY0H2lT3OHXUQ&riu=http%3a%2f%2fwww.aislingsinclair.com%2fwp-content%2fuploads%2f2020%2f03%2fFeatured-Image-LARGE-300.gif&ehk=AwrXRF6v%2bPujkguHiN1sR1QTE%2ftJO1a3KpxkKpjXB2o%3d&risl=&pid=ImgRaw&r=0",
+#          width = 150)
 # st.image("https://media0.giphy.com/media/l10Snuqy6sZ8O1Eq8L/200.webp",
 #          width = 150)
-st.title("Copilot-RCA")
+
 
 hide_st_style = """
             <style>
@@ -59,6 +59,10 @@ st.markdown(style, unsafe_allow_html=True)
 ############# Functions
 
 
+st.title("Copilot-RCA")
+
+st.image("https://th.bing.com/th/id/R.2f543723e0d97263a5d4b07a48179fbf?rik=wIY0H2lT3OHXUQ&riu=http%3a%2f%2fwww.aislingsinclair.com%2fwp-content%2fuploads%2f2020%2f03%2fFeatured-Image-LARGE-300.gif&ehk=AwrXRF6v%2bPujkguHiN1sR1QTE%2ftJO1a3KpxkKpjXB2o%3d&risl=&pid=ImgRaw&r=0",
+         width = 150)
 
 @st.cache_resource()
 def importinits():
@@ -139,6 +143,8 @@ import speech_recognition as sr
 
 def transcribe_speech():
     r = sr.Recognizer()
+    
+    #with audio as source:
     with sr.Microphone(device_index=0) as source:
         r.adjust_for_ambient_noise(source)
         #with st.chat_message("assistant"):
@@ -242,7 +248,12 @@ if True:
             ready_button = st.button("🎙️", key='stButtonVoice')
              ##      
             if ready_button:
-                text = transcribe_speech()
+                with st.spinner("Loading STT"):
+                    from streamlit_mic_recorder import mic_recorder,speech_to_text
+
+                    audio=mic_recorder(start_prompt="⏺️",stop_prompt="⏹️",key='recorder')
+                    #if audio:
+                    text = transcribe_speech()
                 if text:
                     #append messages                         
                     st.session_state.messages.append({"role": "user", "content": text})
@@ -296,10 +307,37 @@ if True:
 
 #st.button("Continue Generating",on_click = continue_generating)
 
+# from streamlit_mic_recorder import mic_recorder,speech_to_text
+# state=st.session_state
+# if 'text_received' not in state:
+#     state.text_received=[]
+    
+    
+# with st.sidebar:
+#     st.write("Convert speech to text:")
+#     text=speech_to_text(language='en',use_container_width=True,just_once=True,key='STT')
+#     if text:       
+#         state.text_received.append(text)
+    
+#     for text in state.text_received:
+#         st.text(text)
+        
+#     st.write("Record your voice, and play the recorded audio:")
+#     audio=mic_recorder(start_prompt="⏺️",stop_prompt="⏹️",key='recorder2')
 
-
-
-
+#     if audio:
+#         st.audio(audio['bytes'])
+    
+    # audio=mic_recorder(
+    #     start_prompt="Start recording",
+    #     stop_prompt="Stop recording", 
+    #     just_once=False,
+    #     use_container_width=False,
+    #     callback=None,
+    #     args=(),
+    #     kwargs={},
+    #     key=None
+    # )
 
 
 # from streamlit_extras.stylable_container import stylable_container

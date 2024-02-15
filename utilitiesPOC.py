@@ -1047,7 +1047,6 @@ def build_knowledge_graph(args,**kwargs):
 
 #Advanced Retriever
 # import QueryBundle
-from llama_index import QueryBundle
 # import NodeWithScore
 from llama_index.schema import NodeWithScore
 # Retrievers
@@ -1061,6 +1060,8 @@ from typing import List
 
 class CustomRetriever(BaseRetriever):
     """Custom retriever that performs both Vector search and Knowledge Graph search"""
+    from llama_index import QueryBundle
+
 
     def __init__(self,vector_retriever: VectorIndexRetriever,kg_retriever: KGTableRetriever,mode: str = "OR") -> None:
         """Init params."""
