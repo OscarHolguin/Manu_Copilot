@@ -238,13 +238,13 @@ if True:
                                    st.session_state.messages.append(message) 
 
          #check speech recognition part
-         with stylable_container(key="stButtonVoice",css_styles="""
-            {
-                position: fixed;
-                bottom: 120px;
+        #  with stylable_container(key="stButtonVoice",css_styles="""
+        #     {
+        #         position: fixed;
+        #         bottom: 120px;
                 
-            }
-            """):
+        #     }
+        #     """):
             # ready_button = st.button("🎙️", key='stButtonVoice')
             #  ##      
             # if ready_button:
