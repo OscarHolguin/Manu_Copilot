@@ -42,3 +42,4 @@ tiktoken
 PyPDF2
 pyaudio
 faiss-cpu
+fastapi
