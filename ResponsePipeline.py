@@ -456,72 +456,72 @@ if __name__=="__main__":
 
 # # COMMAND ----------
 
-from fastapi import FastAPI
-# from langchain.chat_models import ChatAnthropic, ChatOpenAI
-from langchain.prompts import ChatPromptTemplate
-prompt = ChatPromptTemplate.from_template("Answer the users question: {question}")
-vectorchain = vecrag.get_retriever(method="vector",text_embeddings = loaded_embeddings,store="faiss")
-from langserve import add_routes
+# from fastapi import FastAPI
+# # from langchain.chat_models import ChatAnthropic, ChatOpenAI
+# from langchain.prompts import ChatPromptTemplate
+# prompt = ChatPromptTemplate.from_template("Answer the users question: {question}")
+# vectorchain = vecrag.get_retriever(method="vector",text_embeddings = loaded_embeddings,store="faiss")
+# from langserve import add_routes
 
 
-# add_routes(
-#      app,
-#      llmrca,
-#      path="/openai",
-#  )
-app = FastAPI(
-    title="LangChain Server",
-    version="1.0",
-    description="Spin up a simple api server using Langchain's Runnable interfaces",
-)
-# lsgpt = vecrag.response(query=prompt,method="vector",store="faiss",text_embeddings = loaded_embeddings)
+# # add_routes(
+# #      app,
+# #      llmrca,
+# #      path="/openai",
+# #  )
+# app = FastAPI(
+#     title="LangChain Server",
+#     version="1.0",
+#     description="Spin up a simple api server using Langchain's Runnable interfaces",
+# )
+# # lsgpt = vecrag.response(query=prompt,method="vector",store="faiss",text_embeddings = loaded_embeddings)
 
-# print(vecrag.response(query=prompt.format_messages(question="how much docuemnts you have in your knowledge base"),method="vector",store="faiss",text_embeddings = loaded_embeddings))
-add_routes(app, vectorchain, enable_feedback_endpoint=True,path="/cotalk") #this supports only vector chain qa
+# # print(vecrag.response(query=prompt.format_messages(question="how much docuemnts you have in your knowledge base"),method="vector",store="faiss",text_embeddings = loaded_embeddings))
+# add_routes(app, vectorchain, enable_feedback_endpoint=True,path="/cotalk") #this supports only vector chain qa
 
-@app.get("/rag")
-def vector_rag(query_param: str):
-    #whole rag response for conversations
-    result=vecrag.response(query=prompt.format_messages(question=query_param),method="vector",store="faiss",text_embeddings = loaded_embeddings)
-    return {"result": result}
+# @app.get("/rag")
+# def vector_rag(query_param: str):
+#     #whole rag response for conversations
+#     result=vecrag.response(query=prompt.format_messages(question=query_param),method="vector",store="faiss",text_embeddings = loaded_embeddings)
+#     return {"result": result}
 
-from langserve import RemoteRunnable
+# from langserve import RemoteRunnable
 
-cop=RemoteRunnable("http://localhost:8000/cotalk/")
+# cop=RemoteRunnable("http://localhost:8000/cotalk/")
 
-##SERVER SITE EXAMPLE###############################################################################################################################################
+# ##SERVER SITE EXAMPLE###############################################################################################################################################
 
-app = FastAPI(
-    title="Manufacturing-Copilot's Server",
-    version="1.0",
-    description="Spin up a simple api server using Langchain's Runnable interfaces",
-)
+# app = FastAPI(
+#     title="Manufacturing-Copilot's Server",
+#     version="1.0",
+#     description="Spin up a simple api server using Langchain's Runnable interfaces",
+# )
 
-#Response from vectorchain directlty
-vectorchain = vecrag.get_retriever(method="vector",text_embeddings = loaded_embeddings,store="faiss")
-add_routes(app, vectorchain, enable_feedback_endpoint=True,path="/cotalk") #this supports only vector chain qa
+# #Response from vectorchain directlty
+# vectorchain = vecrag.get_retriever(method="vector",text_embeddings = loaded_embeddings,store="faiss")
+# add_routes(app, vectorchain, enable_feedback_endpoint=True,path="/cotalk") #this supports only vector chain qa
 
-#Response from graph
-graphchain = vecrag.get_retriever(method="graph",usememory=True)
-add_routes(app, graphchain, enable_feedback_endpoint=True,path="/kg") #this supports only graph chain qa
+# #Response from graph
+# graphchain = vecrag.get_retriever(method="graph",usememory=True)
+# add_routes(app, graphchain, enable_feedback_endpoint=True,path="/kg") #this supports only graph chain qa
 
-#WHOLE RAG ANSWER conversations with vector only
-@app.get("/rag")
-def vector_rag(query_param: str, method:str):
-    if method.lower()=="vector":
-        result=vecrag.response(query=prompt.format_messages(question=query_param),method=method,store="faiss",text_embeddings = loaded_embeddings)
-    else:
-        result=vecrag.response(query=query_param)
-    return {"result": result}
+# #WHOLE RAG ANSWER conversations with vector only
+# @app.get("/rag")
+# def vector_rag(query_param: str, method:str):
+#     if method.lower()=="vector":
+#         result=vecrag.response(query=prompt.format_messages(question=query_param),method=method,store="faiss",text_embeddings = loaded_embeddings)
+#     else:
+#         result=vecrag.response(query=query_param)
+#     return {"result": result}
 
-########################################################################################################################################################################
+# ########################################################################################################################################################################
 
 
 
-if __name__ == "__main__":
-    import uvicorn
+# if __name__ == "__main__":
+#     import uvicorn
 
-    uvicorn.run(app, host="localhost", port=8000)
+#     uvicorn.run(app, host="localhost", port=8000)
      
 # #     import requests
 #     inputs = {"question": "how many tickets are there"}
