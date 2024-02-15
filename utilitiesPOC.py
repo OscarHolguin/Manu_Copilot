@@ -1049,48 +1049,48 @@ def build_knowledge_graph(args,**kwargs):
 # import QueryBundle
 # import NodeWithScore
 
-from llama_index.retrievers import (
-    BaseRetriever,
-    VectorIndexRetriever,
-    KGTableRetriever,
-)
-from typing import List
+# from llama_index.retrievers import (
+#     BaseRetriever,
+#     VectorIndexRetriever,
+#     KGTableRetriever,
+# )
+# from typing import List
 
-class CustomRetriever(BaseRetriever):
-    """Custom retriever that performs both Vector search and Knowledge Graph search"""
-    from llama_index import QueryBundle
-    from llama_index.schema import NodeWithScore
-    # Retrievers
+# class CustomRetriever(BaseRetriever):
+#     """Custom retriever that performs both Vector search and Knowledge Graph search"""
+#     from llama_index import QueryBundle
+#     from llama_index.schema import NodeWithScore
+#     # Retrievers
 
 
 
-    def __init__(self,vector_retriever: VectorIndexRetriever,kg_retriever: KGTableRetriever,mode: str = "OR") -> None:
-        """Init params."""
-        self._vector_retriever = vector_retriever
-        self._kg_retriever = kg_retriever
-        if mode not in ("AND", "OR"):
-            raise ValueError("Invalid mode.")
-        self._mode = mode
-        super().__init__()
+#     def __init__(self,vector_retriever: VectorIndexRetriever,kg_retriever: KGTableRetriever,mode: str = "OR") -> None:
+#         """Init params."""
+#         self._vector_retriever = vector_retriever
+#         self._kg_retriever = kg_retriever
+#         if mode not in ("AND", "OR"):
+#             raise ValueError("Invalid mode.")
+#         self._mode = mode
+#         super().__init__()
 
-    def _retrieve(self, query_bundle: QueryBundle) -> List[NodeWithScore]:
-        """Retrieve nodes given query."""
-        vector_nodes = self._vector_retriever.retrieve(query_bundle)
-        kg_nodes = self._kg_retriever.retrieve(query_bundle)
+#     def _retrieve(self, query_bundle: QueryBundle) -> List[NodeWithScore]:
+#         """Retrieve nodes given query."""
+#         vector_nodes = self._vector_retriever.retrieve(query_bundle)
+#         kg_nodes = self._kg_retriever.retrieve(query_bundle)
 
-        vector_ids = {n.node.node_id for n in vector_nodes}
-        kg_ids = {n.node.node_id for n in kg_nodes}
+#         vector_ids = {n.node.node_id for n in vector_nodes}
+#         kg_ids = {n.node.node_id for n in kg_nodes}
 
-        combined_dict = {n.node.node_id: n for n in vector_nodes}
-        combined_dict.update({n.node.node_id: n for n in kg_nodes})
+#         combined_dict = {n.node.node_id: n for n in vector_nodes}
+#         combined_dict.update({n.node.node_id: n for n in kg_nodes})
 
-        if self._mode == "AND":
-            retrieve_ids = vector_ids.intersection(kg_ids)
-        else:
-            retrieve_ids = vector_ids.union(kg_ids)
+#         if self._mode == "AND":
+#             retrieve_ids = vector_ids.intersection(kg_ids)
+#         else:
+#             retrieve_ids = vector_ids.union(kg_ids)
 
-        retrieve_nodes = [combined_dict[rid] for rid in retrieve_ids]
-        return retrieve_nodes
+#         retrieve_nodes = [combined_dict[rid] for rid in retrieve_ids]
+#         return retrieve_nodes
 
 # COMMAND ----------
 
@@ -1233,19 +1233,20 @@ class RAG:
                     return query_engine
 
                 
-                elif complexity.lower()=="custom":
-                    if self.type.lower()=="llama":
-                        from llama_index import get_response_synthesizer
-                        from llama_index.query_engine import RetrieverQueryEngine
-                        # create custom retriever
-                        vector_retriever = VectorIndexRetriever(index=vector_index)
-                        kg_retriever = KGTableRetriever(index=kg_index, retriever_mode="keyword", include_text=False)
-                        custom_retriever = CustomRetriever(vector_retriever, kg_retriever)
-                        # create response synthesizer
-                        response_synthesizer = get_response_synthesizer(service_context=service_context,response_mode="tree_summarize")
-                        custom_query_engine = RetrieverQueryEngine(retriever=custom_retriever,response_synthesizer=response_synthesizer)
-                        return custom_query_engine
-                    elif self.type.lower()=='langchain':
+                # elif complexity.lower()=="custom":
+                #     if self.type.lower()=="llama":
+                #         from llama_index import get_response_synthesizer
+                #         from llama_index.query_engine import RetrieverQueryEngine
+                #         # create custom retriever
+                #         vector_retriever = VectorIndexRetriever(index=vector_index)
+                #         kg_retriever = KGTableRetriever(index=kg_index, retriever_mode="keyword", include_text=False)
+                #         custom_retriever = CustomRetriever(vector_retriever, kg_retriever)
+                #         # create response synthesizer
+                #         response_synthesizer = get_response_synthesizer(service_context=service_context,response_mode="tree_summarize")
+                #         custom_query_engine = RetrieverQueryEngine(retriever=custom_retriever,response_synthesizer=response_synthesizer)
+                #         return custom_query_engine
+                
+                elif self.type.lower()=='langchain':
                         from langchain.agents import initialize_agent, Tool
 
                         simple = self.get_retriever("simple",**kwargs)
