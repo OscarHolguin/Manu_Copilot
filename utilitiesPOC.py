@@ -743,7 +743,8 @@ def getllm(openai=True, azure=False, mode="langchain",**kwargs):
                     llm = AzureChatOpenAI(**params)
                 elif mode.lower()=="llama":
                     print("Llama's version")
-                    from llama_index.llms import AzureOpenAI
+                    #from llama_index.llms import AzureOpenAI
+                    from llama_index.llms.azure_openai import AzureOpenAI
                     import openai
                     openai.api_type = "azure"
                     # openai.api_base =  kwargs.get("api_base") #"INSERT AZURE API BASE"
@@ -909,7 +910,8 @@ def get_graphdb(args,**kwargs):
     graphdb = kwargs.get("graphdb")
     url,username,password,database = kwargs.get("url"), kwargs.get("username"), kwargs.get("password"), kwargs.get("database")
     if args.lower()=='llama':
-        from llama_index.storage.storage_context import StorageContext
+        #from llama_index.storage.storage_context import StorageContext
+        from llama_index.core import StorageContext
         print('Using LLama Index graph class')
         if graphdb.lower()=='neo4j' or 'neo4j' in url:
             from llama_index.graph_stores import Neo4jGraphStore
