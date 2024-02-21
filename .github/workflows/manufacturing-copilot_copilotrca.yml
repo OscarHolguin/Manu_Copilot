@@ -64,4 +64,4 @@ jobs:
         with:
           app-name: 'copilotrca'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_177971993EF048E99FEA4D25B1D2F8FF }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_94F1E8729D0E4DF5B05B4FCB28052200 }}
