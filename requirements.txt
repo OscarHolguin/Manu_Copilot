@@ -42,7 +42,7 @@ langchain-experimental
 openai
 tiktoken
 PyPDF2
-pyaudio
+
 faiss-cpu
 fastapi
 neo4j==5.17.0
