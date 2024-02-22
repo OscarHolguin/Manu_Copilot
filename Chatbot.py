@@ -72,7 +72,7 @@ def importinits():
 
 
 vecrag,llmrca,loaded_embeddings,rag2 = importinits()
-vecragsug = rag2(llmrca,None,type="langchain",embeddings = loaded_embeddings,usememory=True)
+vecragsug = rag2(llmrca,None,type="langchain",embeddings = loaded_embeddings)
 
 
 @st.cache_resource
@@ -171,7 +171,7 @@ def generate_suggestions():
     "Generates suggestions using vector RAG context "
     prompt = "based on the context retrieved information generate 5 questions, 3 of them should be about the incident tickets  and the rest of the context information you have"
     rsugs = vecragsug.response(query=prompt,method="vector",store="faiss",text_embeddings = loaded_embeddings)
-    return rsugs
+    return rsugs.content
     #return get_copilot_response(prompt)#,method="vector",store="faiss",text_embeddings = loaded_embeddings)
 
 #@st.cache_resource()
