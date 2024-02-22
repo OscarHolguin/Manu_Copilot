@@ -17,7 +17,7 @@ streamlit-vertical-slider==2.5.5
 streamlit-webrtc
 langchain==0.1.6
 langchain-community==0.0.19
-langchain-core==0.1.23
+
 matplotlib==3.7.3
 networkx==3.2.1
 numpy==1.24.4
@@ -42,7 +42,7 @@ langchain-experimental
 openai
 tiktoken
 PyPDF2
-pyaudio
+
 faiss-cpu
 fastapi
 neo4j==5.17.0
