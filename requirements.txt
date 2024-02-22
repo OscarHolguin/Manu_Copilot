@@ -15,7 +15,8 @@ streamlit-keyup==0.2.2
 streamlit-toggle-switch==1.0.2
 streamlit-vertical-slider==2.5.5
 streamlit-webrtc
-langchain[all]==0.1.7
+langchain==0.1.6
+langchain-community==0.0.19
 
 matplotlib==3.7.3
 networkx==3.2.1
