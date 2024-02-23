@@ -8,7 +8,7 @@ from langchain.agents import AgentExecutor, tool
 
 
 from ResponsePipeline import vecrag,llmrca,loaded_embeddings,rag2
-
+from utilitiesPOC import getllm
 ##SERVER SITE
 app = FastAPI(
     title="Manufacturing-Copilot's Server",
@@ -24,6 +24,44 @@ add_routes(app, vectorchain, enable_feedback_endpoint=True,path="/cotalk") #this
 graphchain = vecrag.get_retriever(method="graph",)
 add_routes(app, graphchain, enable_feedback_endpoint=True,path="/kg") #this supports only graph chain qa
 
+@app.get("/crag")
+def graphnvector(query,promptcomb='try using the functions Copilot_Knowledge first to answer the users query if no answer then the copilot retriever'):
+    #langchaintools to combine them 
+    #adding vector retriever as tool
+    #
+    llmazure =getllm(openai=True,azure =True,mode = "langchain", auth="token",model="gpt-35-turbo-16k",dep_name = "chat-bot-trail",            
+                  api_version= "2023-12-01-preview", api_key = "1bbc7a5ceb0e4677888f22d1eb4c8617",api_base = "https://chat-bot-iot.openai.azure.com/")#([message])
+
+    from langchain.agents import Tool
+    toolslgc = [
+    Tool(
+        name="copilot_retriever",
+        func=lambda q:vectorchain.invoke({"question":q}).get("answer"),
+        description="useful for when you want to answer questions about RCA documents and tickets using FAISS.",
+        return_direct=False,
+    ),
+    Tool(
+        name="Copilot_Knowledge",
+        func=lambda q:graphchain.invoke({"question":q}).get("result"),
+        description="useful for when you want to answer questions about neo4j kg using langchain.",
+        return_direct=False,
+    )]
+
+    #llm_with_tools= llm.bind_tools(toolslgc)
+    #now combine them with agent executor
+    from langchain.agents import AgentExecutor, create_openai_tools_agent
+    from langchain import hub
+    prompt = hub.pull("hwchase17/openai-tools-agent")
+    agent = create_openai_tools_agent(llmazure, toolslgc, prompt)
+    agent_executor = AgentExecutor(agent=agent, tools=toolslgc, verbose=True)
+    querytemplate= promptcomb+", this is the query:{question}" 
+    result = agent_executor.invoke({"input": 
+                       querytemplate.format(question=query)}).get("output")
+    return result
+
+
+
+
 #WHOLE RAG ANSWER conversations with vector only
 @app.get("/rag")
 def vector_rag(query: str, method="vector"):
@@ -32,6 +70,9 @@ def vector_rag(query: str, method="vector"):
     else:
         result=vecrag.response(query=query)
     return {"result": result}
+
+
+
 
 
 if __name__ =="__main__":

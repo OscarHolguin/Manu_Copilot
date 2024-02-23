@@ -105,6 +105,7 @@ langchain-openai==0.0.6
 langchainhub==0.1.14
 langcodes==3.3.0
 langsmith==0.0.87
+langserve
 llama-index==0.10.7
 llama-index-agent-openai==0.1.1
 llama-index-core==0.10.7
@@ -191,7 +192,6 @@ python-digitalocean==1.17.0
 python-graphql-client==0.4.3
 pyvis==0.3.2
 pywin32==305.1
-none-win_amd64.whl
 regex==2023.12.25
 rich==13.7.0
 rsa==4.9
@@ -211,6 +211,7 @@ sqlglot==21.1.2
 srsly==2.4.8
 st-annotated-text==4.0.1
 starlette==0.36.3
+sse_starlette
 statsd==4.0.1
 statsmodels==0.14.1
 streamlit==1.31.0
