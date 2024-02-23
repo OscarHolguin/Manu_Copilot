@@ -9,6 +9,42 @@ import nltk
 from langchain.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain.tools.render import format_tool_to_openai_function
 
+######pwd
+import hmac
+
+
+def check_password():
+    """Returns `True` if the user had the correct password."""
+
+    def password_entered():
+        """Checks whether a password entered by the user is correct."""
+        if hmac.compare_digest(st.session_state["password"], st.secrets["password"]):
+            st.session_state["password_correct"] = True
+            del st.session_state["password"]  # Don't store the password.
+        else:
+            st.session_state["password_correct"] = False
+
+    # Return True if the passward is validated.
+    if st.session_state.get("password_correct", False):
+        return True
+
+    # Show input for password.
+    st.text_input(
+        "Password", type="password", on_change=password_entered, key="password"
+    )
+    if "password_correct" in st.session_state:
+        st.error("😕 Password incorrect")
+    return False
+
+
+if not check_password():
+    st.stop()  # Do not continue if check_password is not True.
+
+
+
+##################
+
+
 
 eygif = "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExNmpycDlnZjhpMHJqOTc2NjhlMms0eTBwazN4eHc1OG02amZkZ3g4ZyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/eKleRTvdp0qXR8l3e7/giphy.gif"
 st.set_page_config(page_title = "Copilot-RCA",
@@ -16,13 +52,6 @@ st.set_page_config(page_title = "Copilot-RCA",
                    layout="wide",
                    initial_sidebar_state="expanded", 
     )
-
-#st.image("https://tse4.mm.bing.net/th/id/OIP.nxkAddPMpqnAlVZN-YhIBwHaHw?rs=1&pid=ImgDetMain",width=150)
-# if not st.session_state.get("messages"):
-#     st.image("https://th.bing.com/th/id/R.2f543723e0d97263a5d4b07a48179fbf?rik=wIY0H2lT3OHXUQ&riu=http%3a%2f%2fwww.aislingsinclair.com%2fwp-content%2fuploads%2f2020%2f03%2fFeatured-Image-LARGE-300.gif&ehk=AwrXRF6v%2bPujkguHiN1sR1QTE%2ftJO1a3KpxkKpjXB2o%3d&risl=&pid=ImgRaw&r=0",
-#          width = 150)
-# st.image("https://media0.giphy.com/media/l10Snuqy6sZ8O1Eq8L/200.webp",
-#          width = 150)
 
 
 hide_st_style = """
