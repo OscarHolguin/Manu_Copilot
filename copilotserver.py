@@ -61,6 +61,8 @@ def graphnvector(query,promptcomb='try using the functions Copilot_Knowledge fir
 
 
 
+
+
 #WHOLE RAG ANSWER conversations with vector only
 @app.get("/rag")
 def vector_rag(query: str, method="vector"):
@@ -87,7 +89,7 @@ from langserve import RemoteRunnable
 copilotv=RemoteRunnable("http://localhost:8000/cotalk/")
 copilotg=RemoteRunnable("http://localhost:8000/kg/")
 copilotrag = RemoteRunnable("http://localhost:8000/rag/")
-
+copilotrag = RemoteRunnable("http://localhost:8000/crag/")
 
 
 
