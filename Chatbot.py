@@ -419,3 +419,30 @@ if True:
 #     # Show device list of microphones in streamlit
 #     selected_mic = st.selectbox("Select device", 1,2,3)#sr.Microphone.list_microphone_names())
 #     #selected_mic_index = sr.Microphone.list_microphone_names().index(selected_mic)
+
+
+
+
+
+################################################################################
+
+# sqlServer = {'sqlServerName': 'euwdsrg03rsql01.database.windows.net',
+#  'sqlDatabase': 'EUWDSRG03RRSG02ADB01_Copy',
+#  'userName': 'dbWSS',
+#  'password': 'braf0wNVtixu3?IhU=hmrCeLzmzX>Wlo'}
+
+# sqlServerName,sqlDatabase,userName,password = sqlServer.get('sqlServerName'),sqlServer.get('sqlDatabase'),sqlServer.get('userName'), sqlServer.get('password')
+
+# tables = ["PROD_MxD_PDM_DeviceFailureV2DataTable","PROD_MxD_PDM_DeviceFailureV2PredictionTable","PROD_MxD_DDM_AssetDataTable","PROD_MxD_DDM_DowntimeDataTable"]
+
+
+# from langchain_community.utilities.sql_database import SQLDatabase
+
+# db = SQLDatabase.from_uri("sqlite:///Chinook.db")
+
+
+# from langchain_community.agent_toolkits import create_sql_agent
+# from langchain_openai import ChatOpenAI
+
+# llm = ChatOpenAI(model="gpt-3.5-turbo", temperature=0)
+# agent_executor = create_sql_agent(llm, db=db, agent_type="openai-tools", verbose=True)

@@ -61,7 +61,6 @@ def graphnvector(query,promptcomb='try using the functions Copilot_Knowledge fir
 
 
 
-
 #WHOLE RAG ANSWER conversations with vector only
 @app.get("/rag")
 def vector_rag(query: str, method="vector"):
@@ -70,7 +69,6 @@ def vector_rag(query: str, method="vector"):
     else:
         result=vecrag.response(query=query)
     return {"result": result}
-
 
 
 
